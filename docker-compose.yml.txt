@@ -1,0 +1,10 @@
+version: '3.4'
+
+services:
+  your_service_name:
+    image: webapplication3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - "C:/Betfair/Data/Unzipped files/Test:/app/DataFiles"

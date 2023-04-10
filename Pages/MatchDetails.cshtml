@@ -1,0 +1,106 @@
+﻿@page "/matches/{Id:int}"
+@model WebApplication3.Pages.Matches.MatchDetailsModel
+
+@{
+    ViewData["Title"] = "Match Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+<h3>@(Model.Match?.EventName ?? "No match data available")</h3>
+
+<div id="chart_div_before" style="width: 900px; height: 500px;"></div>
+<div id="chart_div_after" style="width: 900px; height: 500px;"></div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script>
+		google.charts.load('current', { 'packages': ['corechart'] });
+		google.charts.setOnLoadCallback(drawChart);
+
+		async function drawChart() {
+			// Get the selected Id
+			const matchId = @Model.Id;
+
+			// Fetch the data from your API
+			const response = await fetch(`/api/matches/id/${matchId}`);
+			const data = await response.json();
+
+			// Split the data into two arrays based on the StartTime
+			const startTime = new Date(data.startTime);
+			const beforeStartTimeOdds = data.odds.filter(odds => new Date(odds.timeStamp) < startTime);
+			const afterStartTimeOdds = data.odds.filter(odds => new Date(odds.timeStamp) >= startTime);
+			
+			// Calculate the timestamp 24 hours before the start time
+			const twentyFourHoursBeforeStart = new Date(startTime.getTime() - 24 * 60 * 60 * 1000);
+
+			// Filter the data to only include odds from the last 24 hours before the start time
+			const last24HoursBeforeStartTimeOdds = beforeStartTimeOdds.filter(odds => new Date(odds.timeStamp) >= twentyFourHoursBeforeStart);
+
+			// Draw the two charts
+			drawOddsChart('chart_div_before', 'Odds Over Time (Before StartTime)', last24HoursBeforeStartTimeOdds, startTime, false);
+			drawOddsChart('chart_div_after', 'Probability of Winning from Odds (After StartTime)', afterStartTimeOdds, startTime, true);
+		}
+
+		function drawOddsChart(chartDivId, chartTitle, oddsData, startTime, useReciprocalOdds) {
+			// Prepare the chart data
+			const chartData = new google.visualization.DataTable();
+			chartData.addColumn(useReciprocalOdds ? 'number' : 'datetime', 'Timestamp');
+
+			// Get unique team names
+			const teamNames = [...new Set(oddsData.map(odds => odds.teamName))];
+			teamNames.sort();
+
+			// Add custom colors for each team
+            const teamColors = ['#ff0000', '#0000ff', '#00ff00', '#ff00ff'];
+
+			// Create a team-color mapping
+            const teamColorMapping = {};
+            teamNames.forEach((teamName, index) => {
+                teamColorMapping[teamName] = teamColors[index % teamColors.length];
+            });
+
+			// Add a column for each team
+			teamNames.forEach(teamName => {
+				chartData.addColumn('number', teamName);
+			});
+
+			// Sort odds data by timestamp
+			oddsData.sort((a, b) => new Date(a.timeStamp) - new Date(b.timeStamp));
+
+			// Initialize the previous odds for each team
+			const prevOdds = {};
+			teamNames.forEach(teamName => {
+				prevOdds[teamName] = null;
+			});
+
+			// Add rows with odds for each team at each timestamp
+			oddsData.forEach(odds => {
+				const row = useReciprocalOdds
+					? [(new Date(odds.timeStamp) - startTime) / 60000]
+					: [new Date(odds.timeStamp)];
+
+				// Update the previous odds for the current team
+				prevOdds[odds.teamName] = odds.ltp;
+
+				// Add odds for all teams to the row (using previous odds if not available for the current timestamp)
+				teamNames.forEach(teamName => {
+					const currentOdds = prevOdds[teamName];
+					row.push(currentOdds ? (useReciprocalOdds ? 1 / currentOdds : currentOdds) : null);
+				});
+				chartData.addRow(row);
+			});
+
+			// Set chart options
+			const options = {
+				title: chartTitle,
+				legend: { position: 'bottom' },
+				vAxis: useReciprocalOdds ? { format: '0.00%', minValue: 0 } : {},
+				colors: teamNames.map(teamName => teamColorMapping[teamName])
+			};
+
+			// Draw the chart
+			const chart = new google.visualization.LineChart(document.getElementById(chartDivId));
+			chart.draw(chartData, options);
+		}
+	</script>
+}

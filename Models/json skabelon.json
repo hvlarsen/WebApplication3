@@ -1,0 +1,59 @@
+{
+  "op": "mcm",
+  "clk": "2583587737",
+  "pt": 1464690292418,
+  "mc": [
+    {
+      "id": "1.111269689",
+      "marketDefinition": {
+        "bspMarket": false,
+        "turnInPlayEnabled": true,
+        "persistenceEnabled": true,
+        "marketBaseRate": 5.0,
+        "eventId": "26861994",
+        "eventTypeId": "1",
+        "numberOfWinners": 1,
+        "bettingType": "ODDS",
+        "marketType": "MATCH_ODDS",
+        "marketTime": "2017-02-06T12:00:00.000Z",
+        "suspendTime": "2017-02-06T12:00:00.000Z",
+        "bspReconciled": false,
+        "complete": true,
+        "inPlay": true,
+        "crossMatching": false,
+        "runnersVoidable": false,
+        "numberOfActiveRunners": 3,
+        "betDelay": 9,
+        "status": "OPEN",
+        "runners": [
+          {
+            "status": "ACTIVE",
+            "sortPriority": 1,
+            "id": 1096,
+            "name": "Arsenal"
+          },
+          {
+            "status": "ACTIVE",
+            "sortPriority": 2,
+            "id": 48224,
+            "name": "Tottenham"
+          },
+          {
+            "status": "ACTIVE",
+            "sortPriority": 3,
+            "id": 151478,
+            "name": "Draw"
+          }
+        ],
+        "regulators": [ "MR_INT" ],
+        "countryCode": "GB",
+        "discountAllowed": true,
+        "timezone": "GMT",
+        "openDate": "2017-02-06T12:00:00.000Z",
+        "version": 1331911432,
+        "name": "Match Odds",
+        "eventName": "Arsenal v Tottenham"
+      }
+    }
+  ]
+}
