@@ -27,11 +27,8 @@ internal class Program
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
         app.UseRouting();
-
         app.UseAuthorization();
-
         app.MapRazorPages();
         app.MapControllers();
 
@@ -54,9 +51,6 @@ internal class Program
         {
             // Resolve DatabaseOperations from the scope's ServiceProvider
             var databaseOperations = scope.ServiceProvider.GetRequiredService<DatabaseOperations>();
-
-            // Call the desired methods on the DatabaseOperations instance
-            // await databaseOperations.DeleteAllDataAsync();
 
             // Read files from the folder
             var folder = "/app/DataFiles";

@@ -47,6 +47,7 @@ namespace WebApplication3.Models
         {
             List<Odds> oddsList = new List<Odds>();
             Dictionary<int, string> runnersDict = new Dictionary<int, string>();
+            string countryCode = "Unknown CountryCode";
             string eventName = "Unknown eventName";
             DateTime startTime = new DateTime(1900, 1, 1);
 
@@ -60,6 +61,7 @@ namespace WebApplication3.Models
                     {
                         eventName = mc.marketDefinition?.eventName ?? "Unknown eventName";
                         startTime = mc.marketDefinition?.marketTime ?? new DateTime(1900, 1, 1);
+                        countryCode = mc.marketDefinition?.countryCode ?? "Unknown CountryCode";
 
                         foreach (Runner runner in mc.marketDefinition?.runners ?? Enumerable.Empty<Runner>())
                         {
@@ -80,7 +82,7 @@ namespace WebApplication3.Models
                 }
             }
 
-            return new Match(eventName, startTime, oddsList);
+            return new Match(countryCode, eventName, startTime, oddsList);
         }
     }
 }

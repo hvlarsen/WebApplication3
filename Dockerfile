@@ -5,6 +5,9 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+# Set the environment variable
+ENV ASPNETCORE_ENVIRONMENT=Production
+
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["WebApplication3.csproj", "."]
@@ -19,4 +22,5 @@ RUN dotnet publish "WebApplication3.csproj" -c Release -o /app/publish /p:UseApp
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY BetfairWebApp.db ./BetfairWebApp.db
 ENTRYPOINT ["dotnet", "WebApplication3.dll"]

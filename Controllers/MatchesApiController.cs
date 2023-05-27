@@ -16,14 +16,7 @@ namespace WebApplication3.Controllers
             _context = context;
         }
 
-        [HttpGet("{eventName}")]
-        public async Task<IActionResult> GetMatch(string eventName)
-        {
-            var match = await _context.Matches.Include(m => m.Odds).SingleOrDefaultAsync(m => m.EventName == eventName);
-            return Ok(match);
-        }
-
-        // New action method for fetching match data by Id
+        // Action method for fetching match data by Id
         [HttpGet("id/{id:int}")]
         public async Task<IActionResult> GetMatchById(int id)
         {
@@ -32,5 +25,3 @@ namespace WebApplication3.Controllers
         }
     }
 }
-
-

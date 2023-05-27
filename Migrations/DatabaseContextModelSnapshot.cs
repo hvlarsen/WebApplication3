@@ -23,6 +23,9 @@ namespace WebApplication3.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("EventName")
                         .HasColumnType("TEXT");
 

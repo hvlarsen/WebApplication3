@@ -1,0 +1,29 @@
+﻿@page
+@using WebApplication3.Models
+@model WebApplication3.Pages.Matches.DKmatchesModel
+@{
+    ViewData["Title"] = "Danish Superliga";
+}
+
+<link rel="stylesheet" href="~/css/matches.css">
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="centered">
+    @foreach (var matchDate in Model.MatchesByDate)
+    {
+        <div class="date-box">
+            <div class="date-header">
+                <h3>@matchDate.Key.ToString("dddd, MMMM dd, yyyy")</h3>
+            </div>
+            <div class="matches-container">
+                @foreach (var match in matchDate.Value)
+                {
+                    <div class="match">
+                        <a href="/matches/@match.Id">@match.EventName</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
